@@ -3,11 +3,9 @@ import random
 import asyncio
 from telegram import Bot
 
-# ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
-TOKEN = "8598664810:AAFsWXBtf7OIM01c8wJ16XsQHZ023U0nQQ"   # твой токен (уже стоит)
-MY_ID = 6096618599                                          # ←←← СЮДА ВСТАВЬ СВОЙ ID (только цифры!)
+TOKEN = "8598664810:AAFsWXBtf7OIM01c8wJ16XsQHZ023U0nQQ"   # твой токен
+MY_ID = 6096618599                                        # твой ID — уже правильный
 IMAGE = "signal.jpg"
-# ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
 
 def get_price(symbol):
     try:
@@ -27,30 +25,29 @@ async def send_signal():
     tp    = round(entry * (1.045 if is_long else 0.955), 2 if coin == "SOL" else 1)
     sl    = round(entry * (0.985 if is_long else 1.015), 2 if coin == "SOL" else 1)
 
-    coin_emo = "₿" if coin == "BTC" else "⧫" if coin == "ETH" else "S"
+    coin_emo = "Bitcoin" if coin == "BTC" else "Ethereum" if coin == "ETH" else "Sun"
     dir_emo  = "LONG" if is_long else "SHORT"
 
     caption = (
-        f"**Сигнал на {coin_emo} {coin}**\n\n"
-        "**Направление** {direction} {dir_emo}\n"
-        "**Точка входа** `{entry:,}$`\n"
-        "**Take Profit** `{tp:,}$`\n"
-        "**Stop Loss** `{sl:,}$`\n\n"
-        "Плечо 5–20× • Риск не более 1–2% от депозита"
-    ).format(coin_emo=coin_emo, coin=coin, direction=direction, dir_emo=dir_emo,
-             entry=entry, tp=tp, sl=sl)
+        f"Сигнал на {coin_emo} {coin}\n\n"
+        f"Направление {direction} {dir_emo}\n"
+        f"Точка входа `{entry:,}$`\n"
+        f"Take Profit `{tp:,}$`\n"
+        f"Stop Loss `{sl:,}$`\n\n"
+        "Плечо 5–20× • Риск 1–2% от депозита"
+    )
 
     with open(IMAGE, "rb") as photo:
         await bot.send_photo(chat_id=MY_ID, photo=photo, caption=caption, parse_mode="Markdown")
 
 async def main():
-    print("Бот запущен 24/7 — сигналы каждые 5 минут")
+    print("Бот живёт 24/7 — сигналы каждые 5 минут")
     while True:
         try:
             await send_signal()
         except Exception as e:
             print("Ошибка, но продолжаем:", e)
-        await asyncio.sleep(300)  # 5 минут
+        await asyncio.sleep(300)
 
 if __name__ == "__main__":
     asyncio.run(main())
